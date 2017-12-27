@@ -7,6 +7,7 @@ const deley = (t) => {
 
 const queryResults = async (url, header, resultId) => {
     let res = await fetch(url, { headers: header, method: 'GET' })
+    return res;
 }
 
 // Waiting for job status code 3
@@ -23,7 +24,7 @@ const jobForQuery = async (url, header, jobId, timeout = 60000) => {
 }
 
 const refreshQuery = async (url, header, params) => {
-    let refreshUrl = url + params.reduce( (u, p) => { return `${u}p_${p.key}=${p.value}&` } , '?')
+    let refreshUrl = url + params.reduce( (u, p) => { return `${u}p_${p[0]}=${p[1]}&` } , '?')
     let res = await fetch(refreshUrl, { headers: header, method: 'POST' });
     return res;
 }
@@ -40,6 +41,7 @@ class Redashel {
         let refresh = await refreshQuery(this.refreshUrl, this.authHeader, params);
         let job = await jobForQuery(this.jobUrl, this.authHeader, refresh.data.job.id);
         let results = await queryResults(this.resultUrl, job.data.job.query_result_id);
+        return
     }
 }
 
